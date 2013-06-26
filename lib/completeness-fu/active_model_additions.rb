@@ -3,7 +3,6 @@ if Gem.loaded_specs['activesupport'].version > Gem::Version.create('3.2.0.pre')
 else
   require 'active_support/core_ext/class/inheritable_attributes'
 end
-require 'active_support/core_ext/class/inheritable_attributes'
 require 'active_support/core_ext/class/attribute_accessors'
 
 module CompletenessFu
