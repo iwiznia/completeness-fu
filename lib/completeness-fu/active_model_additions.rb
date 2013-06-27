@@ -47,8 +47,10 @@ module CompletenessFu
     end
 
     module InstanceMethods
-      def completeness_checks
+      def completeness_checks(field = nil)
         @completeness_checks ||= self.class.completeness_checks.deep_dup.each {|c| c.instance = self }
+
+        field ? @completeness_checks.find {|c| c.name == field} : @completeness_checks
       end
 
       # returns an array of hashes with the translated name, description + weighting
