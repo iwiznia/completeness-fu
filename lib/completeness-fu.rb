@@ -28,6 +28,7 @@ module CompletenessFu
 end
 
 require 'completeness-fu/active_model_additions'
+require 'completeness-fu/check'
 require 'completeness-fu/scoring_builder'
 
 

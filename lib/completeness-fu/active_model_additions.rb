@@ -6,9 +6,7 @@ end
 require 'active_support/core_ext/class/attribute_accessors'
 
 module CompletenessFu
-
   module ActiveModelAdditions
-
     def self.included(base)
       base.class_eval do
         def self.define_completeness_scoring(&checks_block)
@@ -16,7 +14,10 @@ module CompletenessFu
             raise CompletenessFuError, 'please make sure ActiveModel::Naming is included so completeness_scoring can translate messages correctly, or that you implement a model_name method.'
           end
 
-          class_attribute :completeness_checks
+          #class_attribute :completeness_checks
+          class << self
+            attr_accessor :completeness_checks
+          end
           cattr_accessor :default_weighting
           cattr_accessor :model_weightings
 
@@ -39,15 +40,17 @@ module CompletenessFu
       end
     end
 
-
     module ClassMethods
       def max_completeness_score
-        self.completeness_checks.inject(0) { |score, check| score += check[:weighting] }
+        self.completeness_checks.sum(&:weighting)
       end
     end
 
-
     module InstanceMethods
+      def completeness_checks
+        @completeness_checks ||= self.class.completeness_checks.deep_dup.each {|c| c.instance = self }
+      end
+
       # returns an array of hashes with the translated name, description + weighting
       def failed_checks
         all_checks_which_pass(false)
@@ -61,7 +64,7 @@ module CompletenessFu
       # returns the absolute complete score
       def completeness_score
         sum_score = 0
-        passed_checks.each { |check| sum_score += check[:weighting] }
+        passed_checks.each { |check| sum_score += check.weighting }
         sum_score
       end
 
@@ -83,32 +86,10 @@ module CompletenessFu
 
         def all_checks_which_pass(should_pass = true)
           self.completeness_checks.inject([]) do |results, check|
-            check_result = run_check(check[:check])
-            results << translate_check_details(check) if (should_pass ? check_result : !check_result)
+            check_result = check.pass?
+            results << check if (should_pass ? check_result : !check_result)
             results
           end
-        end
-
-        def run_check(check)
-          case check
-          when Proc
-            return check.call(self)
-          when Symbol
-            return self.send check
-          else
-            raise CompletenessFuError, "check of type #{check.class} not acceptable"
-          end
-        end
-
-        def translate_check_details(full_check)
-          namespace = CompletenessFu.default_i18n_namespace + [self.class.model_name.name.underscore.to_sym, full_check[:name]]
-
-          translations = [:title, :description, :extra].inject({}) do |list, field|
-                           list[field] = I18n.t(field.to_sym, :scope => namespace)
-                           list
-                         end
-
-          full_check.merge(translations)
         end
 
         def cache_completeness_score(score_type)
@@ -124,7 +105,5 @@ module CompletenessFu
           true
         end
     end
-
   end
-
 end
