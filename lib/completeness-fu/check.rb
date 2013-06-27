@@ -42,7 +42,7 @@ module CompletenessFu
 
     def get_translation(field)
       namespace = CompletenessFu.default_i18n_namespace + [self.translation_namespace, self.name]
-      I18n.t(field.to_sym, :scope => namespace + [self.pass? ? :pass : :fail], :default => I18n.t(field.to_sym, :scope => namespace))
+      I18n.t(field.to_sym, :scope => namespace + [self.pass? ? :pass : :fail], :default => I18n.t(field.to_sym, :scope => namespace, :default => ''))
     end
   end
 end
