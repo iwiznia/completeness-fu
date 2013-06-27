@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{completeness-fu}
-  s.version = "0.6.0"
+  s.version = "0.6.1"
   s.date = %q{2011-03-29}
 
   s.summary     = %q{Simple dsl for defining how to calculate how complete a model instance is (similar to LinkedIn profile completeness)}
