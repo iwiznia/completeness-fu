@@ -117,6 +117,7 @@ The translation structure is as such:
 
 Additionally, you can have different texts for when the check passes or fails. It will first look in name_of_check.[pass/fail].property and then in name_of_check.property.
 Here we have different descriptions for a check:
+
     en:
       completeness_scoring:
         models:
@@ -128,6 +129,7 @@ Here we have different descriptions for a check:
                 description: 'Great! You have a title!'
               fail:
                 description: 'It's necesary to have a title'
+
 
 Up and coming features
 ----------------------
