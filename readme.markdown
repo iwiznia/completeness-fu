@@ -62,6 +62,7 @@ Now, you can access several methods to find out how far along a model is : _pass
     @example.completeness_score # => 60
     @example.percent_complete   # => 50
 
+    @example.completeness_checks.map {|c| c.pass? } # => [true, false, false, false]
 
 Options
 -------
@@ -114,6 +115,19 @@ The translation structure is as such:
               description: 'The Check Description'
               extra: 'Extra Info'
 
+Additionally, you can have different texts for when the check passes or fails. It will first look in name_of_check.[pass/fail].property and then in name_of_check.property.
+Here we have different descriptions for a check:
+    en:
+      completeness_scoring:
+        models:
+          my_model_name:
+            name_of_check:
+              title: 'Title'
+              extra: 'Extra Info'
+              pass:
+                description: 'Great! You have a title!'
+              fail:
+                description: 'It's necesary to have a title'
 
 Up and coming features
 ----------------------
