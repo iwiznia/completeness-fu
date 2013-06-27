@@ -21,7 +21,6 @@ module CompletenessFu
         :default_weighting   => sb.default_weighting }
     end
 
-
     private
 
       def check(name, check, weighting = nil)

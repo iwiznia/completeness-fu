@@ -63,9 +63,7 @@ module CompletenessFu
 
       # returns the absolute complete score
       def completeness_score
-        sum_score = 0
-        passed_checks.each { |check| sum_score += check.weighting }
-        sum_score
+        passed_checks.sum(&:weighting)
       end
 
       # returns the percentage of completeness (relative score)
@@ -81,14 +79,12 @@ module CompletenessFu
         raise CompletenessFuError, "grade could not be determined with percent complete #{self.percent_complete.round}"
       end
 
-
       private
 
         def all_checks_which_pass(should_pass = true)
-          self.completeness_checks.inject([]) do |results, check|
+          self.completeness_checks.select do |check|
             check_result = check.pass?
-            results << check if (should_pass ? check_result : !check_result)
-            results
+            should_pass ? check_result : !check_result
           end
         end
 
